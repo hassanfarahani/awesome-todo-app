@@ -30,9 +30,9 @@ const mutations = {
     updateTask(state, payload) {
         Object.assign(state.tasks[payload.id], payload.updates);
     },
-    // deleteTask(state, id) {
-    //     Vue.delete(state.tasks, id);
-    // },
+    deleteTask(state, id) {
+        Vue.delete(state.tasks, id);
+    },
     // addTask(state, payload) {
     //     Vue.set(state.tasks, payload.id, payload.task)
     // },
@@ -48,9 +48,9 @@ const actions = {
     updateTask({ commit }, payload) {
         commit('updateTask', payload)
     },
-    // deleteTask({ commit }, id) {
-    //     commit('deleteTask', id);
-    // },
+    deleteTask({ commit }, id) {
+        commit('deleteTask', id);
+    },
     // addTask({ commit }, task) {
     //     let taskId = uid();
     //     let payload = {

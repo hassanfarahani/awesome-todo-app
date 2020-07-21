@@ -23,6 +23,13 @@
             </div>
           </div>
         </q-item-section>
+
+        <q-item-section side>
+          <div class="row">
+            <!-- <q-btn @click.stop="showEditTaskModal" flat round color="primary" icon="edit" dense /> -->
+            <q-btn @click.stop="promptToDelete(id)" flat round color="red" icon="delete" dense />
+          </div>
+        </q-item-section>
       </q-item>
 </template>
 
@@ -48,18 +55,18 @@ export default {
   },
   methods: {
     // ...mapActions('tasks', ['updateTask', 'deleteTask']),
-    ...mapActions('tasks', ['updateTask']),
+    ...mapActions('tasks', ['updateTask', 'deleteTask']),
 
-//     promptToDelete(id) {
-//       this.$q.dialog({
-//         title: 'Confirm',
-//         message: 'Really delete?',
-//         cancel: true,
-//         persistent: true
-//       }).onOk(() => {
-//         this.deleteTask(id);
-//       })
-//     },
+    promptToDelete(id) {
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Really delete?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.deleteTask(id);
+      })
+    },
 //     showEditTaskModal() {
 //       this.showEditTask = true;
 //     }
