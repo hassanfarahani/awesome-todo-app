@@ -21,9 +21,9 @@ const state = {
             dueDate: '2019/05/13',
             dueTime: '16:00'
         }
-    }
-    // search: '',
-    // sort: 'name'
+    },
+    search: '',
+    sort: 'name'
 }
 
 const mutations = {
@@ -36,12 +36,12 @@ const mutations = {
     addTask(state, payload) {
         Vue.set(state.tasks, payload.id, payload.task)
     },
-    // setSearch(state, value) {
-    //     state.search = value;
-    // },
-    // setSort(state, value) {
-    //     state.sort = value;
-    // }
+    setSearch(state, value) {
+        state.search = value;
+    },
+    setSort(state, value) {
+        state.sort = value;
+    }
 }
 
 const actions = {
@@ -59,71 +59,68 @@ const actions = {
         };
         commit('addTask', payload);
     },
-    // setSearch({ commit }, value) {
-    //     commit('setSearch', value);
-    // },
-    // setSort({ commit }, value) {
-    //     commit('setSort', value);
-    // }
+    setSearch({ commit }, value) {
+        commit('setSearch', value);
+    },
+    setSort({ commit }, value) {
+        commit('setSort', value);
+    }
 }
 
 const getters = {
-    tasks(state) {
-        return state.tasks;
+    tasksSorted(state) {
+        let tasksSorted = {},
+            keysOrdered = Object.keys(state.tasks);
+
+        keysOrdered.sort((a, b) => {
+            let taskAProp = state.tasks[a][state.sort].toLowerCase(),
+                taskBProp = state.tasks[b][state.sort].toLowerCase()
+
+            if (taskAProp>taskBProp) return 1
+            else if (taskAProp<taskBProp) return -1
+            else return 0
+        });
+        keysOrdered.forEach(key => {
+            tasksSorted[key] = state.tasks[key];
+        })
+        return tasksSorted
+    },
+    tasksFiltered(state, getters) {
+        let tasksSorted = getters.tasksSorted;
+        let tasksFiltered = {};
+        if (state.search) {
+            Object.keys(tasksSorted).forEach(key => {
+                let task = tasksSorted[key];
+                if (task.name.toLowerCase().includes(state.search.toLowerCase())) {
+                    tasksFiltered[key] = task;
+                }
+            })
+            return tasksFiltered;
+        }
+        return tasksSorted;
+    },
+    tasksToDo(state, getters) {
+        let tasksFiltered = getters.tasksFiltered;
+        let tasks = {};
+        Object.keys(tasksFiltered).forEach(key => {
+            let task = tasksFiltered[key];
+            if (!task.completed) {
+                tasks[key] = task;
+            }
+        })
+        return tasks;
+    },
+    tasksCompleted(state, getters) {
+        let tasksFiltered = getters.tasksFiltered;
+        let tasks = {};
+        Object.keys(tasksFiltered).forEach(key => {
+            let task = tasksFiltered[key];
+            if (task.completed) {
+                tasks[key] = task;
+            }
+        })
+        return tasks;
     }
-    // tasksSorted(state) {
-    //     let tasksSorted = {},
-    //         keysOrdered = Object.keys(state.tasks);
-
-    //     keysOrdered.sort((a, b) => {
-    //         let taskAProp = state.tasks[a][state.sort].toLowerCase(),
-    //             taskBProp = state.tasks[b][state.sort].toLowerCase()
-
-    //         if (taskAProp>taskBProp) return 1
-    //         else if (taskAProp<taskBProp) return -1
-    //         else return 0
-    //     });
-    //     keysOrdered.forEach(key => {
-    //         tasksSorted[key] = state.tasks[key];
-    //     })
-    //     return tasksSorted
-    // },
-    // tasksFiltered(state, getters) {
-    //     let tasksSorted = getters.tasksSorted;
-    //     let tasksFiltered = {};
-    //     if (state.search) {
-    //         Object.keys(tasksSorted).forEach(key => {
-    //             let task = tasksSorted[key];
-    //             if (task.name.toLowerCase().includes(state.search.toLowerCase())) {
-    //                 tasksFiltered[key] = task;
-    //             }
-    //         })
-    //         return tasksFiltered;
-    //     }
-    //     return tasksSorted;
-    // },
-    // tasksToDo(state, getters) {
-    //     let tasksFiltered = getters.tasksFiltered;
-    //     let tasks = {};
-    //     Object.keys(tasksFiltered).forEach(key => {
-    //         let task = tasksFiltered[key];
-    //         if (!task.completed) {
-    //             tasks[key] = task;
-    //         }
-    //     })
-    //     return tasks;
-    // },
-    // tasksCompleted(state, getters) {
-    //     let tasksFiltered = getters.tasksFiltered;
-    //     let tasks = {};
-    //     Object.keys(tasksFiltered).forEach(key => {
-    //         let task = tasksFiltered[key];
-    //         if (task.completed) {
-    //             tasks[key] = task;
-    //         }
-    //     })
-    //     return tasks;
-    // }
 }
 
 export default {
