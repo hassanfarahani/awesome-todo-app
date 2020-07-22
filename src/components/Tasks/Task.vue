@@ -1,6 +1,7 @@
 <template>
       <q-item
         @click="updateTask({id, updates: {completed: !task.completed}})"
+        v-touch-hold:1000.mouse="showEditTaskModal"
         :class="task.completed ? 'bg-green-1' : 'bg-orange-1'"
         clickable
         v-ripple>
@@ -9,7 +10,10 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-label :class="{ 'text-strikethrough': task.completed }">{{ task.name }}</q-item-label>
+          <q-item-label :class="{ 'text-strikethrough': task.completed }"
+            v-html="$options.filters.searchHighlight(task.name, search)">
+            {{ task.name }}
+          </q-item-label>
         </q-item-section>
 
         <q-item-section v-if="task.dueDate" side>
@@ -18,7 +22,7 @@
               <q-icon name="event" size="18px" class="q-mr-xs" />
             </div>
             <div class="column items-end">
-              <q-item-label caption>{{ task.dueDate }}</q-item-label>
+              <q-item-label caption>{{ task.dueDate | niceDate }}</q-item-label>
               <q-item-label caption><small>{{ task.dueTime }}</small></q-item-label>
             </div>
           </div>
@@ -57,7 +61,6 @@ export default {
     ...mapState('tasks', ['search'])
   },
   methods: {
-    // ...mapActions('tasks', ['updateTask', 'deleteTask']),
     ...mapActions('tasks', ['updateTask', 'deleteTask']),
 
     promptToDelete(id) {
@@ -77,13 +80,16 @@ export default {
   filters: {
     niceDate(value) {
       return date.formatDate(value, 'MMM D')
+    },
+    searchHighlight(value, search) {
+      if (search) {
+        let searchRegExp = new RegExp(search, 'ig')
+        return value.replace(searchRegExp, match => {
+          return `<span class="bg-yellow-6">${match}</span>`
+        })
+      }
+      return value
     }
-    // searchHighlight(value, search) {
-    //   if (search) {
-    //     return value.replace(search, `<span class="bg-yellow-6">${search}</span>`)
-    //   }
-    //   return value
-    // }
   }
 }
 </script>
