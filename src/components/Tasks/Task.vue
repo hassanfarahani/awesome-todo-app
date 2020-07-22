@@ -26,16 +26,19 @@
 
         <q-item-section side>
           <div class="row">
-            <!-- <q-btn @click.stop="showEditTaskModal" flat round color="primary" icon="edit" dense /> -->
+            <q-btn @click.stop="showEditTaskModal" flat round color="primary" icon="edit" dense />
             <q-btn @click.stop="promptToDelete(id)" flat round color="red" icon="delete" dense />
           </div>
         </q-item-section>
+        <q-dialog v-model="showEditTask">
+            <editTask @close="showEditTask=false" :task="task" :id="id" />
+        </q-dialog>
       </q-item>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-// import editTask from 'components/Tasks/Modals/EditTask.vue'
+import editTask from 'components/Tasks/Modals/EditTask.vue'
 import { date } from 'quasar'
 // import { log } from 'util';
 // import { lookup } from 'dns';
@@ -44,12 +47,12 @@ export default {
   props: ['task', 'id'],
   data() {
     return {
-    //   showEditTask: false
+      showEditTask: false
     }
   },
-//   components: {
-//     editTask
-//   },
+  components: {
+    editTask
+  },
   computed: {
     ...mapState('tasks', ['search'])
   },
@@ -67,9 +70,9 @@ export default {
         this.deleteTask(id);
       })
     },
-//     showEditTaskModal() {
-//       this.showEditTask = true;
-//     }
+    showEditTaskModal() {
+      this.showEditTask = true;
+    }
   },
   filters: {
     niceDate(value) {
