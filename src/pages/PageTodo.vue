@@ -1,23 +1,28 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="row q-mb-lg">
-      <search />
-      <sort />
+  <q-page>
+
+    <div class="q-pa-md absolute full-width full-height column">
+      <div class="row q-mb-lg">
+        <search />
+        <sort />
+      </div>
+      <q-scroll-area class="q-scroll-area-tasks">
+        <noTasks v-if="!Object.keys(tasksToDo).length" />
+        <tasksTodo v-if="Object.keys(tasksToDo).length" :tasksToDo="tasksToDo" />
+        <tasksCompleted v-if="Object.keys(tasksCompleted).length" :tasksCompleted="tasksCompleted" class="q-mb-xl" />
+      </q-scroll-area>
+      <div class="absolute-bottom text-center q-mb-lg no-pointer-events">
+          <q-btn
+              @click="showAddTask=true"
+              round
+              color="primary"
+              size="24px"
+              icon="add"
+              class="all-pointer-events"
+          />
+      </div>
     </div>
-    <div class="relative-position">
-      <noTasks v-if="!Object.keys(tasksToDo).length" />
-      <tasksTodo v-if="Object.keys(tasksToDo).length" :tasksToDo="tasksToDo" />
-      <tasksCompleted v-if="Object.keys(tasksCompleted).length" :tasksCompleted="tasksCompleted" />
-    </div>
-    <div class="absolute-bottom text-center q-mb-lg">
-        <q-btn
-            @click="showAddTask=true"
-            round
-            color="primary"
-            size="24px"
-            icon="add"
-        />
-    </div>
+
     <q-dialog v-model="showAddTask">
       <addTask @close="showAddTask=false" />
     </q-dialog>
@@ -61,6 +66,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .q-scroll-area-tasks {
+    display: flex;
+    flex-grow: 1;
+  }
 </style>

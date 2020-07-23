@@ -16,7 +16,7 @@ const state = {
             dueTime: '18:30'
         },
         'ID3': {
-            name: 'Go bananas',
+            name: 'Get bananas',
             completed: false,
             dueDate: '2019/05/13',
             dueTime: '16:00'
