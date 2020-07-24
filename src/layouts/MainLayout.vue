@@ -5,7 +5,13 @@
         <q-toolbar-title class="absolute-center">
           Awesome Todo
         </q-toolbar-title>
-        <q-btn :to="{name: 'auth'}" flat icon-right="account_circle" label="Login" class="absolute-right" />
+        <q-btn
+          :to="{name: 'auth'}"
+          flat
+          icon-right="account_circle"
+          :label="loggedIn ? 'Logout' : 'Login'"
+          @click="loggedIn ? logoutUser() : false"
+          class="absolute-right" />
       </q-toolbar>
     </q-header>
 
@@ -47,14 +53,13 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'layout',
-
   components: {
     EssentialLink
   },
-
   data () {
     return {
       leftDrawerOpen: false,
@@ -71,6 +76,12 @@ export default {
         }
       ]
     }
+  },
+  computed: {
+    ...mapState('auth', ['loggedIn'])
+  },
+  methods: {
+    ...mapActions('auth', ['logoutUser'])
   }
 }
 </script>

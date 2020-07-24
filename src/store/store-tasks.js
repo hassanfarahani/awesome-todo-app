@@ -1,26 +1,27 @@
 import Vue from 'vue';
 import { uid } from 'quasar';
+import { firebaseDb, firebaseAuth } from 'boot/firebase'
 
 const state = {
     tasks: {
-        'ID1': {
-            name: 'Go to shop',
-            completed: false,
-            dueDate: '2019/05/12',
-            dueTime: '18:30'
-        },
-        'ID2': {
-            name: 'Get apples',
-            completed: false,
-            dueDate: '2019/05/14',
-            dueTime: '18:30'
-        },
-        'ID3': {
-            name: 'Get bananas',
-            completed: false,
-            dueDate: '2019/05/13',
-            dueTime: '16:00'
-        }
+        // 'ID1': {
+        //     name: 'Go to shop',
+        //     completed: false,
+        //     dueDate: '2019/05/12',
+        //     dueTime: '18:30'
+        // },
+        // 'ID2': {
+        //     name: 'Get apples',
+        //     completed: false,
+        //     dueDate: '2019/05/14',
+        //     dueTime: '18:30'
+        // },
+        // 'ID3': {
+        //     name: 'Get bananas',
+        //     completed: false,
+        //     dueDate: '2019/05/13',
+        //     dueTime: '16:00'
+        // }
     },
     search: '',
     sort: 'name'
@@ -64,6 +65,34 @@ const actions = {
     },
     setSort({ commit }, value) {
         commit('setSort', value);
+    },
+    fbReadData({ commit }) {
+        console.log('read data from fb')
+        // to access firebase data, We first set up a reference to a particular node within the database.
+        // we can use firebase auth api to get access to the user id in db
+        let userId = firebaseAuth.currentUser.uid
+        let userTasks = firebaseDb.ref(`tasks/${userId}`)
+        // we can add Hookes to this ref, so listen for changes within our data
+        // add a hook (child added hook) which will be fired any time a new task is added within firebase
+        // child added hook is also fired, When we first connect to the database
+        userTasks.on('child_added', snapshot => {
+            let task = snapshot.val()
+            let payload = {
+                id: snapshot.key,
+                task
+            }
+            commit('addTask', payload)
+        })
+
+        // child_changed hook === task updated
+        userTasks.on('child_changed', snapshot => {
+            let task = snapshot.val()
+            let payload = {
+                id: snapshot.key,
+                updates: task
+            }
+            commit('updateTask', payload)
+        })
     }
 }
 
