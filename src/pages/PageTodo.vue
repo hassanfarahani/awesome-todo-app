@@ -7,7 +7,7 @@
         <sort />
       </div>
       <q-scroll-area class="q-scroll-area-tasks">
-        <noTasks v-if="!Object.keys(tasksToDo).length" />
+        <noTasks v-if="!Object.keys(tasksToDo).length && !search && !settings.showTasksInOneList" />
         <tasksTodo v-if="Object.keys(tasksToDo).length" :tasksToDo="tasksToDo" />
         <tasksCompleted v-if="Object.keys(tasksCompleted).length" :tasksCompleted="tasksCompleted" class="q-mb-xl" />
       </q-scroll-area>
@@ -47,6 +47,7 @@ export default {
   },
   computed: {
     ...mapGetters('tasks', ['tasksToDo', 'tasksCompleted']),
+    ...mapGetters('settings', ['settings']),
     ...mapState('tasks', ['search'])
   },
   components: {
