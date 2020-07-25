@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import { uid } from 'quasar';
+import { uid, Notify } from 'quasar';
 import { firebaseDb, firebaseAuth } from 'boot/firebase'
+import { showErrorMessage } from 'src/functions/function-show-error-message';
 
 const state = {
     tasks: {
@@ -88,6 +89,9 @@ const actions = {
         // once we have value (all of the tasks for current user), the callback will be fired
         userTasks.once('value', snapshot => {
             commit('setTasksDownloaded', true)
+        }, error => {
+            showErrorMessage(error.message)
+            this.$router.replace({ name: 'auth'})
         })
 
         // we can add Hookes to this ref, so listen for changes within our data
@@ -121,17 +125,38 @@ const actions = {
     fbAddTask({}, payload) {
         let userId = firebaseAuth.currentUser.uid
         let taskRef = firebaseDb.ref(`tasks/${userId}/${payload.id}`) // get a reference to the new node in fb
-        taskRef.set(payload.task) // adding data to the node using set method
+        taskRef.set(payload.task, error => { // adding data to the node using set method
+            if (error) {
+                showErrorMessage(error.message)
+            } else {
+                Notify.create('Task added')
+            }
+        })
     },
     fbUpdateTask({}, payload) {
         let userId = firebaseAuth.currentUser.uid
         let taskRef = firebaseDb.ref(`tasks/${userId}/${payload.id}`) // get a reference to the new node in fb
-        taskRef.update(payload.updates)
+        taskRef.update(payload.updates, error => {
+            if (error) {
+                showErrorMessage(error.message)
+            } else {
+                let keys = Object.keys(payload.updates)
+                if (!(keys.includes('completed') && keys.length == 1)) {
+                    Notify.create('Task updated')
+                }
+            }
+        })
     },
     fbDeleteTask({}, taskId) {
         let userId = firebaseAuth.currentUser.uid
         let taskRef = firebaseDb.ref(`tasks/${userId}/${taskId}`) // get a reference to the new node in fb
-        taskRef.remove()
+        taskRef.remove(error => {
+            if (error) {
+                showErrorMessage(error.message)
+            } else {
+                Notify.create('Task deleted')
+            }
+        })
     }
 }
 
