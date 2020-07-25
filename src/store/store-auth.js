@@ -42,6 +42,8 @@ const actions = {
                 // { root: true } ==> this option will allow us to trigger this action (fbReadData) which is in a different module (tasks)
                 dispatch('tasks/fbReadData', null, { root: true })
             } else {
+                commit('tasks/clearTasks', null, { root: true})
+                commit('tasks/setTasksDownloaded', false, { root: true})
                 commit('setLoggedIn', false)
                 LocalStorage.set('loggedIn', false)
                 this.$router.replace({name: 'auth'}).catch(err => { console.log(err)})

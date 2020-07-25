@@ -23,8 +23,11 @@ const state = {
         //     dueTime: '16:00'
         // }
     },
+    // tasksDownloaded: this will stay false until the firebase data is downloaded at which point we'll set this to true
+    // adding a <template /> tag to the PageTodo in order to show the whole page after all the tasks downloaded
     search: '',
-    sort: 'name'
+    sort: 'name',
+    tasksDownloaded: false
 }
 
 const mutations = {
@@ -37,28 +40,37 @@ const mutations = {
     addTask(state, payload) {
         Vue.set(state.tasks, payload.id, payload.task)
     },
+    clearTasks(state) {
+        state.tasks = {}
+    },
     setSearch(state, value) {
         state.search = value;
     },
     setSort(state, value) {
         state.sort = value;
+    },
+    setTasksDownloaded(state, value) {
+        state.tasksDownloaded = value;
     }
 }
 
 const actions = {
-    updateTask({ commit }, payload) {
-        commit('updateTask', payload)
+    updateTask({ commit, dispatch }, payload) {
+        // commit('updateTask', payload)
+        dispatch('fbUpdateTask', payload)
     },
-    deleteTask({ commit }, id) {
-        commit('deleteTask', id);
+    deleteTask({ commit, dispatch }, id) {
+        // commit('deleteTask', id);
+        dispatch('fbDeleteTask', id);
     },
-    addTask({ commit }, task) {
+    addTask({ commit, dispatch }, task) {
         let taskId = uid();
         let payload = {
             id: taskId,
             task
         };
-        commit('addTask', payload);
+        // commit('addTask', payload);
+        dispatch('fbAddTask', payload);
     },
     setSearch({ commit }, value) {
         commit('setSearch', value);
@@ -67,11 +79,17 @@ const actions = {
         commit('setSort', value);
     },
     fbReadData({ commit }) {
-        console.log('read data from fb')
         // to access firebase data, We first set up a reference to a particular node within the database.
         // we can use firebase auth api to get access to the user id in db
         let userId = firebaseAuth.currentUser.uid
         let userTasks = firebaseDb.ref(`tasks/${userId}`)
+
+        // initial check for data loaded into the page from fb
+        // once we have value (all of the tasks for current user), the callback will be fired
+        userTasks.once('value', snapshot => {
+            commit('setTasksDownloaded', true)
+        })
+
         // we can add Hookes to this ref, so listen for changes within our data
         // add a hook (child added hook) which will be fired any time a new task is added within firebase
         // child added hook is also fired, When we first connect to the database
@@ -93,6 +111,27 @@ const actions = {
             }
             commit('updateTask', payload)
         })
+
+        // child_removed hook === task deleted
+        userTasks.on('child_removed', snapshot => {
+            let taskId = snapshot.key
+            commit('deleteTask', taskId)
+        })
+    },
+    fbAddTask({}, payload) {
+        let userId = firebaseAuth.currentUser.uid
+        let taskRef = firebaseDb.ref(`tasks/${userId}/${payload.id}`) // get a reference to the new node in fb
+        taskRef.set(payload.task) // adding data to the node using set method
+    },
+    fbUpdateTask({}, payload) {
+        let userId = firebaseAuth.currentUser.uid
+        let taskRef = firebaseDb.ref(`tasks/${userId}/${payload.id}`) // get a reference to the new node in fb
+        taskRef.update(payload.updates)
+    },
+    fbDeleteTask({}, taskId) {
+        let userId = firebaseAuth.currentUser.uid
+        let taskRef = firebaseDb.ref(`tasks/${userId}/${taskId}`) // get a reference to the new node in fb
+        taskRef.remove()
     }
 }
 
