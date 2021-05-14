@@ -37,5 +37,13 @@ quasar dev
 quasar build
 ```
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/48249708/118305494-e6805500-b49c-11eb-8be3-365fd2291ad6.png)
+![image](https://user-images.githubusercontent.com/48249708/118305754-42e37480-b49d-11eb-9da5-42a2813af898.png)
+![image](https://user-images.githubusercontent.com/48249708/118305790-51319080-b49d-11eb-9426-29611d9cac5e.png)
+![image](https://user-images.githubusercontent.com/48249708/118305846-67d7e780-b49d-11eb-8c69-666c5db9de9c.png)
+
+
+
+
