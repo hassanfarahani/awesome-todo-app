@@ -1,6 +1,7 @@
 # Quasar App (awesome-todo)
 
-A Quasar Framework app which help the user to keep track of his/her tasks
+> A Quasar Framework app which help the user to keep track of his/her tasks
+> Live demo [_here_](https://awesometodo.netlify.app/)
 
 ## Technologies
 
