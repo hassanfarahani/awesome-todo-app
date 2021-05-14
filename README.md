@@ -39,9 +39,16 @@ quasar build
 
 ## Screenshots
 
+- This is the login / sognup page
 ![image](https://user-images.githubusercontent.com/48249708/118305494-e6805500-b49c-11eb-8be3-365fd2291ad6.png)
+
+- This is the main page where user can add, edit and delete a task. He/she can also sort the tasks by date and/or name and a search a specific task
 ![image](https://user-images.githubusercontent.com/48249708/118305754-42e37480-b49d-11eb-9da5-42a2813af898.png)
+
+- This is Add task dialogue so user can add a task. There is a same dialogue for Editing a task
 ![image](https://user-images.githubusercontent.com/48249708/118305790-51319080-b49d-11eb-9426-29611d9cac5e.png)
+
+- This is setting page where user can change the way the application works such as displaying the tasks in a single list instead of a separate list or time format
 ![image](https://user-images.githubusercontent.com/48249708/118305846-67d7e780-b49d-11eb-8c69-666c5db9de9c.png)
 
 
