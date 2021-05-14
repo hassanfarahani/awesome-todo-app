@@ -39,7 +39,7 @@ quasar build
 
 ## Screenshots
 
-- This is the login / sognup page
+- This is the login / signup page
 ![image](https://user-images.githubusercontent.com/48249708/118305494-e6805500-b49c-11eb-8be3-365fd2291ad6.png)
 
 - This is the main page where user can add, edit and delete a task. He/she can also sort the tasks by date and/or name and a search a specific task
